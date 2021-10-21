@@ -254,4 +254,5 @@ set(CMAKE_DEPEND_INFO_FILES
   "beginner_tutorials/CMakeFiles/listener.dir/DependInfo.cmake"
   "beginner_tutorials/CMakeFiles/talker.dir/DependInfo.cmake"
   "beginner_tutorials/CMakeFiles/roscpp_generate_messages_cpp.dir/DependInfo.cmake"
+  "collision_avoidance/CMakeFiles/CollisionMain.dir/DependInfo.cmake"
   )

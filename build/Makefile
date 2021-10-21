@@ -674,6 +674,19 @@ roscpp_generate_messages_cpp/fast:
 	$(MAKE) -f beginner_tutorials/CMakeFiles/roscpp_generate_messages_cpp.dir/build.make beginner_tutorials/CMakeFiles/roscpp_generate_messages_cpp.dir/build
 .PHONY : roscpp_generate_messages_cpp/fast
 
+#=============================================================================
+# Target rules for targets named CollisionMain
+
+# Build rule for target.
+CollisionMain: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 CollisionMain
+.PHONY : CollisionMain
+
+# fast build rule for target.
+CollisionMain/fast:
+	$(MAKE) -f collision_avoidance/CMakeFiles/CollisionMain.dir/build.make collision_avoidance/CMakeFiles/CollisionMain.dir/build
+.PHONY : CollisionMain/fast
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -726,6 +739,7 @@ help:
 	@echo "... listener"
 	@echo "... talker"
 	@echo "... roscpp_generate_messages_cpp"
+	@echo "... CollisionMain"
 .PHONY : help
 
 
