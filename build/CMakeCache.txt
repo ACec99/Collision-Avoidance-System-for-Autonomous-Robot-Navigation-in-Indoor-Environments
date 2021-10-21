@@ -311,6 +311,12 @@ beginner_tutorials_SOURCE_DIR:STATIC=/home/cec99/catkin_ws/src/beginner_tutorial
 //The directory containing a CMake configuration file for catkin.
 catkin_DIR:PATH=/opt/ros/melodic/share/catkin/cmake
 
+//Value Computed by CMake
+collision_avoidance_BINARY_DIR:STATIC=/home/cec99/catkin_ws/build/collision_avoidance
+
+//Value Computed by CMake
+collision_avoidance_SOURCE_DIR:STATIC=/home/cec99/catkin_ws/src/collision_avoidance
+
 //The directory containing a CMake configuration file for cpp_common.
 cpp_common_DIR:PATH=/opt/ros/melodic/share/cpp_common/cmake
 
@@ -539,7 +545,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_NM
 CMAKE_NM-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=5
+CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=6
 //ADVANCED property for variable: CMAKE_OBJCOPY
 CMAKE_OBJCOPY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_OBJDUMP

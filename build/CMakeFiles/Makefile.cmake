@@ -18,10 +18,14 @@ set(CMAKE_MAKEFILE_DEPENDS
   "catkin/catkin_generated/version/package.cmake"
   "catkin_generated/installspace/_setup_util.py"
   "catkin_generated/order_packages.cmake"
+  "collision_avoidance/catkin_generated/ordered_paths.cmake"
+  "collision_avoidance/catkin_generated/package.cmake"
   "/home/cec99/catkin_ws/devel/share/beginner_tutorials/cmake/beginner_tutorials-msg-paths.cmake"
   "/home/cec99/catkin_ws/src/CMakeLists.txt"
   "/home/cec99/catkin_ws/src/beginner_tutorials/CMakeLists.txt"
   "/home/cec99/catkin_ws/src/beginner_tutorials/package.xml"
+  "/home/cec99/catkin_ws/src/collision_avoidance/CMakeLists.txt"
+  "/home/cec99/catkin_ws/src/collision_avoidance/package.xml"
   "/opt/ros/melodic/share/catkin/cmake/../package.xml"
   "/opt/ros/melodic/share/catkin/cmake/all.cmake"
   "/opt/ros/melodic/share/catkin/cmake/assert.cmake"
@@ -206,6 +210,7 @@ set(CMAKE_MAKEFILE_PRODUCTS
   "gtest/googlemock/CMakeFiles/CMakeDirectoryInformation.cmake"
   "gtest/googlemock/gtest/CMakeFiles/CMakeDirectoryInformation.cmake"
   "beginner_tutorials/CMakeFiles/CMakeDirectoryInformation.cmake"
+  "collision_avoidance/CMakeFiles/CMakeDirectoryInformation.cmake"
   )
 
 # Dependency information for all targets:
