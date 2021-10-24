@@ -26,16 +26,17 @@ void LetturaVel(const geometry_msgs::Twist::ConstPtr& msg) {
 }
 
 void LaserCallBack(const sensor_msgs::LaserScan::ConstPtr& scan_in) {
-	/*laser_geometry::LaserProjection projector_;
+	ROS_INFO("sono entrato nel LaserCallBack \n");
+	laser_geometry::LaserProjection projector_;
 	tf::TransformListener listener_;
 	tf::StampedTransform transform ;
-	if (!listener_.waitForTransform(scan_in->header.frame_id,"/base_link",
+	/*if (!listener_.waitForTransform(scan_in->header.frame_id,"/base_link",
 	scan_in->header.stamp + ros::Duration().fromSec(scan_in->ranges.size()*scan_in->time_increment),
-	ros::Duration(1.0))) return ;
+	ros::Duration(1.0))) return ;*/
 	
 	sensor_msgs::PointCloud cloud;
 	try {
-		projector_.transformLaserScanToPointCloud("/base_link",*scan_in,cloud,listener_);
+		projector_.transformLaserScanToPointCloud("/stageros",*scan_in,cloud,listener_);
 	}
 	catch ( tf::TransformException& e ) {
 		//ROS_ERROR("%s", e.what());
@@ -51,6 +52,8 @@ void LaserCallBack(const sensor_msgs::LaserScan::ConstPtr& scan_in) {
 		p(0) = point.x ;
 		p(1) = point.y ;
 		
+		ROS_INFO("ho settato i punti: p(0):%f p(1):%f", p(0), p(1) );
+		
 		p = transform_laser*p; //in questo modo ottengo il punto trasformato
 		
 		sum_x-= p(0) / (p(0)*p(0) + p(1)*p(1));
@@ -58,17 +61,23 @@ void LaserCallBack(const sensor_msgs::LaserScan::ConstPtr& scan_in) {
 	}
 	
 	vel_corrette.linear.x = sum_x + vel_utente.linear.x ;
-	vel_corrette.angular.z = sum_y + vel_utente.angular.z ;*/
+	vel_corrette.angular.z = sum_y + vel_utente.angular.z ;
 	
-	vel_corrette.linear.x = vel_utente.linear.x;
+	/*vel_corrette.linear.x = vel_utente.linear.x;
 	vel_corrette.linear.y = vel_utente.linear.y;
 	vel_corrette.angular.z = vel_utente.angular.z;
 	
-	ROS_INFO("Ho settato la vel corretta a : x:%f y:%f z:%f", vel_corrette.linear.x, vel_corrette.linear.y, vel_corrette.angular.z);
+	ROS_INFO("Ho settato la vel corretta a : x:%f y:%f z:%f", vel_corrette.linear.x, vel_corrette.linear.y, vel_corrette.angular.z);*/
 	
 	ROS_INFO("Sto pubblicando le vel: x:%f y:%f z:%f", vel_corrette.linear.x, vel_corrette.linear.y, vel_corrette.angular.z);
 	
 	vel_pub.publish(vel_corrette);
+	
+	vel_corrette.linear.x = 0 ;
+	
+	vel_corrette.linear.y = 0 ;
+	
+	vel_corrette.angular.z = 0 ;
 	
 }
 	
@@ -83,14 +92,17 @@ int main(int argc, char **argv) {
 	ros::Rate loop_rate(10);
 	
 	ros::Subscriber vel_sub = n.subscribe("/cmd_vel_AUX",1000,LetturaVel); //leggo le coordinate date dall'utente sul topic cmd_vel_AUX
-		
+	
 	ros::Subscriber vel_correct = n.subscribe("/base_scan",1000,LaserCallBack); //leggo il laserscanner e modifico le coordinate per far muovere il robot nella direzione corretta
 																					// ( = in modo tale che non vada a sbattere )
 		
 	vel_pub = n.advertise<geometry_msgs::Twist>("/cmd_vel",1000); //scrivo sul topico cmd_vel le coordinate corrette
+	
+	//while ( ros::ok ) {
 		
 	ros::spin();
-	//loop_rate.sleep();
+	loop_rate.sleep();
+	//}
 	
 	return 0;
 }

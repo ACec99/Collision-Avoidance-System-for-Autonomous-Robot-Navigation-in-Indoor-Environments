@@ -108,7 +108,7 @@ include_directories(${EIGEN3_INCLUDE_DIR})
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES collision_avoidance
-  CATKIN_DEPENDS roscpp rospy std_msgs
+  CATKIN_DEPENDS roscpp rospy std_msgs tf laser_geometry
 #  DEPENDS system_lib
 )
 
