@@ -64,27 +64,32 @@ void LaserCallBack(const sensor_msgs::LaserScan::ConstPtr& scan_in) {
 	float sum_x = 0;
 	float sum_y = 0;
 	for(auto& point :cloud.points) {
-		p(0) = point.x ;
-		p(1) = point.y ;
-		
-		ROS_INFO("ho settato i punti: p(0):%f p(1):%f", p(0), p(1) );
-		
-		p = transform_laser*p; //in questo modo ottengo il punto trasformato
-		
-		float modulo = 1/sqrt(point.x*point.x + point.y*point.y);
-		
-		sum_x+= p(0)*modulo*modulo;//p(0) / (p(0)*p(0) + p(1)*p(1));
-		sum_y+= p(1)*modulo*modulo;//p(1) / (p(0)*p(0) + p(1)*p(1));
+		if ( vel_utente.linear.x != 0 ) {
+			p(0) = point.x ;
+			p(1) = point.y ;
+			
+			ROS_INFO("ho settato i punti: p(0):%f p(1):%f", p(0), p(1) );
+			
+			p = transform_laser*p; //in questo modo ottengo il punto trasformato
+			
+			float modulo = 1/sqrt(point.x*point.x + point.y*point.y);
+			
+			sum_x-= p(0)*modulo*modulo;//p(0) / (p(0)*p(0) + p(1)*p(1));
+			sum_y-= p(1)*modulo*modulo;//p(1) / (p(0)*p(0) + p(1)*p(1));
+		}
+		else break;
 	}
+	ROS_INFO("sum_x è pari a: %f \n\n", sum_x);
+	ROS_INFO("sum_y è pari a: %f n\n", sum_y);
 	//le forze che consideriamo hanno la stessa direzione e verso opposto dei vettori robot->punto-collisione
 	//quindi prendiamo l'opposto delle forze calcolate
-	sum_x = -sum_x ;
-	sum_y = -sum_y ;
+	//sum_x = -sum_x ;
+	//sum_y = -sum_y ;
 	
-	vel_corrette.linear.x = sum_x + vel_utente.linear.x ;
+	vel_corrette.linear.x = sum_x/400 + vel_utente.linear.x ;
 	ROS_INFO("vel_corrette di coordinata x %f \n", vel_corrette.linear.x );
-	vel_corrette.angular.z = sum_y + vel_utente.angular.z ;
-	ROS_INFO("vel_corrette di coordinata y %f \n", vel_corrette.linear.y );
+	vel_corrette.angular.z = sum_y/800 + vel_utente.angular.z ;
+	ROS_INFO("vel_corrette di coordinata z %f \n", vel_corrette.angular.z );
 	
 	/*vel_corrette.linear.x = vel_utente.linear.x;
 	vel_corrette.linear.y = vel_utente.linear.y;
