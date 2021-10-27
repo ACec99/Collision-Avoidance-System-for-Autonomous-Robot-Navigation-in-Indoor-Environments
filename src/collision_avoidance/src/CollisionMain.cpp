@@ -29,7 +29,6 @@ void LetturaVel(const geometry_msgs::Twist::ConstPtr& msg) {
 }
 
 void LaserCallBack(const sensor_msgs::LaserScan::ConstPtr& scan_in) {
-	ROS_INFO("sono entrato nel LaserCallBack \n");
 	if ( coord_arrived == false ) return ;
 	coord_arrived = false ;// così da evitare di processare due volte uno stesso comando di velocità
 	//inizializzazione oggetti necessari per la procedura
@@ -46,8 +45,8 @@ void LaserCallBack(const sensor_msgs::LaserScan::ConstPtr& scan_in) {
 		//otteniamo punti ostacolo dal laser scanner
 		projector.transformLaserScanToPointCloud("base_laser_link",*scan_in,cloud,listener);
 		//otteniamo la trasformata per ottenere i punti ostacolo rispetto al robot
-		listener.waitForTransform("base_footprint","base_laser_link",ros::Time(0),ros::Duration(10.0));
-		listener.lookupTransform("base_footprint","base_laser_link",ros::Time(0),transform);
+		listener.waitForTransform("base_link","base_laser_link",ros::Time(0),ros::Duration(10.0));
+		listener.lookupTransform("base_link","base_laser_link",ros::Time(0),transform);
 	}
 	catch ( tf::TransformException& e ) {
 		//ROS_ERROR("%s", e.what());
@@ -68,36 +67,24 @@ void LaserCallBack(const sensor_msgs::LaserScan::ConstPtr& scan_in) {
 			p(0) = point.x ;
 			p(1) = point.y ;
 			
-			ROS_INFO("ho settato i punti: p(0):%f p(1):%f", p(0), p(1) );
-			
 			p = transform_laser*p; //in questo modo ottengo il punto trasformato
 			
 			float modulo = 1/sqrt(point.x*point.x + point.y*point.y);
 			
 			sum_x-= p(0)*modulo*modulo;//p(0) / (p(0)*p(0) + p(1)*p(1));
 			sum_y-= p(1)*modulo*modulo;//p(1) / (p(0)*p(0) + p(1)*p(1));
+			//sottraggo invece di sommare perchè prendo l'opposto delle forze calcolate
+			//questo perchè le forze che consideriamo hanno la stessa direzione e verso
+			//opposto dei vettori robot->punto-collisione
 		}
 		else break;
 	}
 	ROS_INFO("sum_x è pari a: %f \n\n", sum_x);
 	ROS_INFO("sum_y è pari a: %f n\n", sum_y);
-	//le forze che consideriamo hanno la stessa direzione e verso opposto dei vettori robot->punto-collisione
-	//quindi prendiamo l'opposto delle forze calcolate
-	//sum_x = -sum_x ;
-	//sum_y = -sum_y ;
 	
-	vel_corrette.linear.x = sum_x/400 + vel_utente.linear.x ;
-	ROS_INFO("vel_corrette di coordinata x %f \n", vel_corrette.linear.x );
+	//setto le coordinate della velocità da passare al cmd_vel
+	vel_corrette.linear.x = sum_x/500 + vel_utente.linear.x ;
 	vel_corrette.angular.z = sum_y/800 + vel_utente.angular.z ;
-	ROS_INFO("vel_corrette di coordinata z %f \n", vel_corrette.angular.z );
-	
-	/*vel_corrette.linear.x = vel_utente.linear.x;
-	vel_corrette.linear.y = vel_utente.linear.y;
-	vel_corrette.angular.z = vel_utente.angular.z;*/
-	
-	ROS_INFO("Ho settato la vel corretta a : x:%f y:%f z:%f", vel_corrette.linear.x, vel_corrette.linear.y, vel_corrette.angular.z);
-	
-	ROS_INFO("Sto pubblicando le vel: x:%f y:%f z:%f", vel_corrette.linear.x, vel_corrette.linear.y, vel_corrette.angular.z);
 	
 	vel_pub.publish(vel_corrette);
 	
@@ -125,12 +112,9 @@ int main(int argc, char **argv) {
 																					// ( = in modo tale che non vada a sbattere )
 		
 	vel_pub = n.advertise<geometry_msgs::Twist>("/cmd_vel",1000); //scrivo sul topico cmd_vel le coordinate corrette
-	
-	//while ( ros::ok ) {
 		
 	ros::spin();
 	loop_rate.sleep();
-	//}
 	
 	return 0;
 }

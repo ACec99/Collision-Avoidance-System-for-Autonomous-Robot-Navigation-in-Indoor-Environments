@@ -946,8 +946,8 @@ clean: beginner_tutorials/CMakeFiles/beginner_tutorials_genpy.dir/clean
 # Target rules for target beginner_tutorials/CMakeFiles/beginner_tutorials_generate_messages_cpp.dir
 
 # All Build rule for target.
-beginner_tutorials/CMakeFiles/beginner_tutorials_generate_messages_cpp.dir/all: beginner_tutorials/CMakeFiles/_beginner_tutorials_generate_messages_check_deps_AddTwoInts.dir/all
 beginner_tutorials/CMakeFiles/beginner_tutorials_generate_messages_cpp.dir/all: beginner_tutorials/CMakeFiles/std_msgs_generate_messages_cpp.dir/all
+beginner_tutorials/CMakeFiles/beginner_tutorials_generate_messages_cpp.dir/all: beginner_tutorials/CMakeFiles/_beginner_tutorials_generate_messages_check_deps_AddTwoInts.dir/all
 beginner_tutorials/CMakeFiles/beginner_tutorials_generate_messages_cpp.dir/all: beginner_tutorials/CMakeFiles/_beginner_tutorials_generate_messages_check_deps_Num.dir/all
 	$(MAKE) -f beginner_tutorials/CMakeFiles/beginner_tutorials_generate_messages_cpp.dir/build.make beginner_tutorials/CMakeFiles/beginner_tutorials_generate_messages_cpp.dir/depend
 	$(MAKE) -f beginner_tutorials/CMakeFiles/beginner_tutorials_generate_messages_cpp.dir/build.make beginner_tutorials/CMakeFiles/beginner_tutorials_generate_messages_cpp.dir/build
