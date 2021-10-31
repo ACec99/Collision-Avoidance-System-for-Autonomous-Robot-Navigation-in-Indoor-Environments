@@ -35,12 +35,8 @@ void LaserCallBack(const sensor_msgs::LaserScan::ConstPtr& scan_in) {
 	laser_geometry::LaserProjection projector;
 	tf::TransformListener listener;
 	tf::StampedTransform transform ;
-	
-	
-	/*if (!listener_.waitForTransform(scan_in->header.frame_id,"/base_link",
-	scan_in->header.stamp + ros::Duration().fromSec(scan_in->ranges.size()*scan_in->time_increment),
-	ros::Duration(1.0))) return ;*/
 	sensor_msgs::PointCloud cloud;
+	
 	try {
 		//otteniamo punti ostacolo dal laser scanner
 		projector.transformLaserScanToPointCloud("base_laser_link",*scan_in,cloud,listener);
@@ -49,7 +45,6 @@ void LaserCallBack(const sensor_msgs::LaserScan::ConstPtr& scan_in) {
 		listener.lookupTransform("base_link","base_laser_link",ros::Time(0),transform);
 	}
 	catch ( tf::TransformException& e ) {
-		//ROS_ERROR("%s", e.what());
 		std::cout << e.what();
 		ros::Duration(1.0).sleep();
 		return;
@@ -71,20 +66,55 @@ void LaserCallBack(const sensor_msgs::LaserScan::ConstPtr& scan_in) {
 			
 			float modulo = 1/sqrt(point.x*point.x + point.y*point.y);
 			
-			sum_x-= p(0)*modulo*modulo;//p(0) / (p(0)*p(0) + p(1)*p(1));
-			sum_y-= p(1)*modulo*modulo;//p(1) / (p(0)*p(0) + p(1)*p(1));
+			sum_x-= p(0)*modulo*modulo;
+			sum_y-= p(1)*modulo*modulo;
 			//sottraggo invece di sommare perchè prendo l'opposto delle forze calcolate
 			//questo perchè le forze che consideriamo hanno la stessa direzione e verso
 			//opposto dei vettori robot->punto-collisione
 		}
 		else break;
 	}
-	ROS_INFO("sum_x è pari a: %f \n\n", sum_x);
-	ROS_INFO("sum_y è pari a: %f n\n", sum_y);
+	//ROS_INFO("sum_x è pari a: %f \n\n", sum_x);
+	//ROS_INFO("sum_y è pari a: %f n\n", sum_y);
 	
 	//setto le coordinate della velocità da passare al cmd_vel
-	vel_corrette.linear.x = sum_x/500 + vel_utente.linear.x ;
-	vel_corrette.angular.z = sum_y/800 + vel_utente.angular.z ;
+	if ( vel_utente.linear.x <= 5.0 ) {
+		vel_corrette.linear.x = sum_x/300 + vel_utente.linear.x ;
+		vel_corrette.angular.z = sum_y/800 + vel_utente.angular.z ;
+		ROS_INFO("la vel in z è %f\n", vel_corrette.angular.z);
+	}
+	else if ( vel_utente.linear.x > 5.0 && vel_utente.linear.x < 10.0) {
+		vel_corrette.linear.x = sum_x/200 + vel_utente.linear.x ;
+		vel_corrette.angular.z = sum_y/800 + vel_utente.angular.z ;
+		ROS_INFO("la vel in z è %f\n", vel_corrette.angular.z);
+	}
+	else if ( vel_utente.linear.x >= 10.0 && vel_utente.linear.x < 15.0 && vel_utente.angular.z == 0.0 ) {
+		vel_corrette.linear.x = sum_x/100 + vel_utente.linear.x ;
+		vel_corrette.angular.z = sum_y/750 + vel_utente.angular.z ;
+		ROS_INFO("la vel in z è %f\n", vel_corrette.angular.z);
+	}
+	else if ( vel_utente.linear.x >= 15.0 && vel_utente.linear.x < 20.0) {
+		vel_corrette.linear.x = sum_x/80 + vel_utente.linear.x ;
+		vel_corrette.angular.z = sum_y/600 + vel_utente.angular.z ;
+		ROS_INFO("la vel in z è %f\n", vel_corrette.angular.z);
+	}
+	else if ( vel_utente.linear.x >= 10.0 && vel_utente.linear.x < 15.0 && vel_utente.angular.z != 0.0 ) {
+		vel_corrette.linear.x = sum_x/150 + vel_utente.linear.x ;
+		vel_corrette.angular.z = sum_y/600 + vel_utente.angular.z ;
+		ROS_INFO("la vel in z è %f\n", vel_corrette.angular.z);
+	}
+	else if ( vel_utente.linear.x >= 20.0 && vel_utente.linear.x < 80 ) {
+		vel_corrette.linear.x = sum_x/40 + vel_utente.linear.x ;
+		vel_corrette.angular.z = sum_y/600 + vel_utente.angular.z ;
+		ROS_INFO("la vel in z è %f\n", vel_corrette.angular.z);
+	}
+	else {
+		vel_corrette.linear.x = sum_x/20 + vel_utente.linear.x ;
+		vel_corrette.angular.z = sum_y/700 + vel_utente.angular.z ;
+		ROS_INFO("la vel in z è %f\n", vel_corrette.angular.z);
+	}
+	
+	//ROS_INFO("le vel che sto pubblicando CORRETTE sono: %f %f \n", vel_corrette.linear.x , vel_corrette.angular.z );
 	
 	vel_pub.publish(vel_corrette);
 	
