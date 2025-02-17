@@ -12,6 +12,6 @@ Here are the steps to run the project:
 
 1- **Clone the labiagi_2020_21 repository**
    
-   ''' bash
+   ``` bash
    git clone https://gitlab.com/grisetti/labiagi_2020_21.git 
-   '''
+   ```
