@@ -11,4 +11,7 @@ The system employs ROS topics to manage communication between different componen
 Here are the steps to run the project:
 
 1- **Clone the labiagi_2020_21 repository**
-   ''' git clone https://gitlab.com/grisetti/labiagi_2020_21.git '''
+   
+   ''' bash
+   git clone https://gitlab.com/grisetti/labiagi_2020_21.git 
+   '''
